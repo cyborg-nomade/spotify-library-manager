@@ -1,21 +1,27 @@
 import { Component } from '@angular/core';
-import SpotifyWebApi from 'spotify-web-api-js';
+import { SpotifyService } from '../app/spotify-service.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'spotify-library-manager';
-  spotifyApi: any;
-  artists: any;
+  artist: any;
+  total: any;
+  name: any;
+  link: any;
 
-  constructor() {
-    this.spotifyApi = new SpotifyWebApi();
-  }
+  constructor(private spotify: SpotifyService) {}
 
-  getArtists() {
-    // this.artists = this.spotifyApi.getFollowedArtists();
+  getFollowedArtists() {
+    this.spotify.getFollowedArtists(1).subscribe((artist) => {
+      this.artist = artist;
+      console.log(this.artist);
+    });
+    this.total = this.artist.artists.total;
+    this.name = this.artist.artists.items[0].name;
+    this.link = this.artist.artists.items[0].external_urls.spotify;
   }
 }
