@@ -332,13 +332,19 @@
 </div> -->
 
 <button (click)="getFollowedArtists()">Show Artists</button>
+<button (click)="getFollowedArtists()">Show Total</button>
 
 <div class="col">
-  <h2>{{ total }}</h2>
-  <h3>{{ name }}</h3>
-  <p>
-    <a [href]="link" target="_blank"> Go to the Artist's page </a>
-  </p>
+  <h2>Total Artists: {{ total }}</h2>
+  <ol>
+    <li *ngFor="let artist of followedArtists">
+      <p>
+        <a [href]="artist.link" target="_blank"> {{ artist.name }} </a>
+      </p>
+      <img [src]="artist.imageURL" alt="" />
+      <p>Popularity: {{ artist.poplarity }}</p>
+    </li>
+  </ol>
 </div>
 
 <router-outlet></router-outlet>

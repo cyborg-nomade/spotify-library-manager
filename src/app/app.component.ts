@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { SpotifyService } from '../app/spotify-service.service';
+import { Artist } from './artists.model';
 
 @Component({
   selector: 'app-root',
@@ -8,20 +9,16 @@ import { SpotifyService } from '../app/spotify-service.service';
 })
 export class AppComponent {
   title = 'spotify-library-manager';
-  artist: any;
-  total: any;
-  name: any;
-  link: any;
+  followedArtists: Artist[];
+  total: number;
 
   constructor(private spotify: SpotifyService) {}
 
   getFollowedArtists() {
-    this.spotify.getFollowedArtists(1).subscribe((artist) => {
-      this.artist = artist;
-      console.log(this.artist);
-    });
-    this.total = this.artist.artists.total;
-    this.name = this.artist.artists.items[0].name;
-    this.link = this.artist.artists.items[0].external_urls.spotify;
+    this.followedArtists = this.spotify.getFollowedArtists();
+  }
+
+  getTotalArtists() {
+    this.total = this.spotify.getTotalArtists();
   }
 }
