@@ -110,6 +110,7 @@ export class SpotifyService {
     );
   }
 
+  // TODO: get all pages and append them to the followedArtists array
   // getAllFollowedArtists() {
   //   return this.getFollowedArtistsPage().pipe();
   // }
