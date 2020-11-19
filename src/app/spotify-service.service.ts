@@ -2,22 +2,23 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Artist } from './artists.model';
+import { pipe } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpotifyService {
-  private followedArtists: Artist[] = [];
-  private currentArtists: any;
-  private indexArtist: Artist = {
-    id: 0,
-    name: '',
-    link: '',
-    genres: [],
-    imageURL: '',
-    poplarity: 0,
-    spotifyURI: '',
-  };
+  // private followedArtists: Artist[] = [];
+  // private currentArtists: any;
+  // private indexArtist: Artist = {
+  //   id: 0,
+  //   name: '',
+  //   link: '',
+  //   genres: [],
+  //   imageURL: '',
+  //   poplarity: 0,
+  //   spotifyURI: '',
+  // };
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +27,7 @@ export class SpotifyService {
 
     const headers = new HttpHeaders({
       Authorization:
-        'Bearer BQAn1xkUeUaGDvdteShyxOHF9135ORMNaU-ygPVk0UERztapdM_x4yVm8xoNkn3b6wS7SO2Ii2ZSJCZioieKxjeknCu_YExGZU4xHDHZDgdbvem0Ys9yJjRCNn3NUZzbBXCqD3YBLVtAK_X1nRAdm5IkmOAYrPj4',
+        'Bearer BQDDjpiBHIPgxOJ9Fc3kvvme1TcC5l20uGHddDc6wJ5v2Yxt5BKuq7VuY0Co1OXWIcSgOV-UV0ZBvB61i3DpRUc0CyPalqQ8u4rdWsFmSof5_Njrhs0OHcLSQFDahLbDk__IVN41rpBYzyWcUoYEN4nf94c7SlBh',
     });
 
     return this.http.get(url, { headers });
@@ -55,42 +56,59 @@ export class SpotifyService {
   }
 
   getFollowedArtists() {
-    // tslint:disable-next-line: prefer-const
+    return this.getQuery(`me/following?type=artist&limit=50`).pipe(
+      map((respData: any) => {
+        const followedArtists = [];
+        console.log(followedArtists);
 
-    this.getQuery(`me/following?type=artist&limit=50`).subscribe(
-      (currentArtists) => {
-        this.currentArtists = currentArtists.artists.items;
-
-        for (const artist of this.currentArtists) {
-          this.indexArtist.id = artist.id;
-          this.indexArtist.name = artist.name;
-          this.indexArtist.link = artist.external_urls.spotify;
-          this.indexArtist.genres = artist.genres;
-          // this.indexArtist.imageURL = artist.images[0].url;
-          this.indexArtist.poplarity = artist.popularity;
-          this.indexArtist.spotifyURI = artist.uri;
-          console.log(this.indexArtist);
-
-          this.followedArtists.push(this.indexArtist);
-          console.log(this.followedArtists);
+        const currentCrudeArrayArtists = [];
+        for (const key in respData) {
+          if (Object.prototype.hasOwnProperty.call(respData, key)) {
+            currentCrudeArrayArtists.push(...respData.artists.items);
+          }
         }
-
-        // return this.followedArtists;
-      }
+        for (const artist of currentCrudeArrayArtists) {
+          const indexArtist: Artist = {
+            id: 0,
+            name: '',
+            link: '',
+            genres: [],
+            imageURL: '',
+            poplarity: 0,
+            spotifyURI: '',
+          };
+          indexArtist.id = artist.id;
+          indexArtist.name = artist.name;
+          indexArtist.link = artist.external_urls.spotify;
+          indexArtist.genres = artist.genres;
+          if (artist.images.length !== 0) {
+            indexArtist.imageURL = artist.images[0].url;
+          } else {
+            indexArtist.imageURL = '';
+          }
+          indexArtist.poplarity = artist.popularity;
+          indexArtist.spotifyURI = artist.uri;
+          console.log(indexArtist.name, artist.name);
+          console.log(indexArtist);
+          followedArtists.push(indexArtist);
+        }
+        return followedArtists;
+      })
     );
-
-    console.log(this.followedArtists);
-    return this.followedArtists;
   }
 
   getTotalArtists() {
-    let currentArtists: any;
+    return this.getQuery(`me/following?type=artist&limit=50`).pipe(
+      map((respData: any) => {
+        let totalFollowedArtists: number;
 
-    this.getQuery(`me/following?type=artist&limit=50`).subscribe((artists) => {
-      currentArtists = artists;
-    });
-    console.log(currentArtists.total);
-
-    return currentArtists.total;
+        for (const key in respData) {
+          if (Object.prototype.hasOwnProperty.call(respData, key)) {
+            totalFollowedArtists = respData.artists.total;
+          }
+        }
+        return totalFollowedArtists;
+      })
+    );
   }
 }

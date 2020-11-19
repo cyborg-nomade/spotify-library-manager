@@ -15,10 +15,14 @@ export class AppComponent {
   constructor(private spotify: SpotifyService) {}
 
   getFollowedArtists() {
-    this.followedArtists = this.spotify.getFollowedArtists();
+    this.spotify.getFollowedArtists().subscribe((followedArtists) => {
+      this.followedArtists = followedArtists;
+    });
   }
 
   getTotalArtists() {
-    this.total = this.spotify.getTotalArtists();
+    this.spotify.getTotalArtists().subscribe((totalFollowedArtists) => {
+      this.total = totalFollowedArtists;
+    });
   }
 }
