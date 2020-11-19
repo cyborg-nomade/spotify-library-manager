@@ -15,8 +15,8 @@ export class AppComponent {
   constructor(private spotify: SpotifyService) {}
 
   getFollowedArtists() {
-    this.spotify.getFollowedArtists().subscribe((followedArtists) => {
-      this.followedArtists = followedArtists;
+    this.spotify.getFollowedArtistsPage().subscribe((followedArtists) => {
+      this.followedArtists = followedArtists.artistsArray;
     });
   }
 

@@ -27,7 +27,7 @@ export class SpotifyService {
 
     const headers = new HttpHeaders({
       Authorization:
-        'Bearer BQDDjpiBHIPgxOJ9Fc3kvvme1TcC5l20uGHddDc6wJ5v2Yxt5BKuq7VuY0Co1OXWIcSgOV-UV0ZBvB61i3DpRUc0CyPalqQ8u4rdWsFmSof5_Njrhs0OHcLSQFDahLbDk__IVN41rpBYzyWcUoYEN4nf94c7SlBh',
+        'Bearer BQDP58QJjfMnGsob4oPDsOTi3D3OoDCzXsRvrZowejUCb1mblZXG3Kks8NrbXMUqvp1yW70AzwAXGjt3eWlM_OqkwxC5OGBOq5q1C86qip5-MXuv7I1tuDBwlcUZxjiTzTPGMtF9d3r047P41qVx8RZL077QuSRW',
     });
 
     return this.http.get(url, { headers });
@@ -55,18 +55,31 @@ export class SpotifyService {
     );
   }
 
-  getFollowedArtists() {
-    return this.getQuery(`me/following?type=artist&limit=50`).pipe(
-      map((respData: any) => {
-        const followedArtists = [];
-        console.log(followedArtists);
+  getFollowedArtistsPage(after?: string) {
+    if (after) {
+      after = '&' + after;
+    } else {
+      after = '';
+    }
 
+    return this.getQuery(`me/following?type=artist${after}&limit=50`).pipe(
+      map((respData: any) => {
+        const followedArtists = {
+          artistsArray: [],
+          nextPage: '',
+        };
         const currentCrudeArrayArtists = [];
+        console.log(respData);
+
         for (const key in respData) {
           if (Object.prototype.hasOwnProperty.call(respData, key)) {
             currentCrudeArrayArtists.push(...respData.artists.items);
+            followedArtists.nextPage = respData.artists.cursors.after;
           }
         }
+
+        console.log(followedArtists.nextPage);
+
         for (const artist of currentCrudeArrayArtists) {
           const indexArtist: Artist = {
             id: 0,
@@ -90,12 +103,16 @@ export class SpotifyService {
           indexArtist.spotifyURI = artist.uri;
           console.log(indexArtist.name, artist.name);
           console.log(indexArtist);
-          followedArtists.push(indexArtist);
+          followedArtists.artistsArray.push(indexArtist);
         }
         return followedArtists;
       })
     );
   }
+
+  // getAllFollowedArtists() {
+  //   return this.getFollowedArtistsPage().pipe();
+  // }
 
   getTotalArtists() {
     return this.getQuery(`me/following?type=artist&limit=50`).pipe(
