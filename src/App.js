@@ -4,6 +4,8 @@ import Card from "./components/UI/Card";
 
 import "./App.css";
 
+import React, { useState } from "react";
+
 function App() {
   const artists = [
     {
@@ -40,10 +42,16 @@ function App() {
     },
   ];
 
+  const [searchedTerm, setSearchedTerm] = useState("");
+
+  const searchBarChangedHandler = (event) => {
+    setSearchedTerm(event.target.value);
+  };
+
   return (
     <div>
-      <Navbar />
-      <Card className="search-label">Hi</Card>
+      <Navbar onSearchTermChanged={searchBarChangedHandler} />
+      <Card className="search-label">{searchedTerm}</Card>
       <ArtistsList artists={artists} />
     </div>
   );

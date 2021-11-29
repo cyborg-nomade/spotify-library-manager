@@ -8,7 +8,12 @@ const Navbar = (props) => {
     <nav className={classes.navbar}>
       <div className={classes["navbar-right"]}>
         <label htmlFor="search-bar">Search</label>
-        <input type="search" name="" id="search-bar" />
+        <input
+          type="search"
+          name=""
+          id="search-bar"
+          onChange={props.onSearchTermChanged}
+        />
         <Button type="submit">OK</Button>
       </div>
     </nav>
