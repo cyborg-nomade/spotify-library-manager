@@ -1,4 +1,5 @@
 import ArtistsList from "./components/artists/ArtistsList";
+import Navbar from "./components/nav/Navbar";
 
 function App() {
   const artists = [
@@ -38,7 +39,7 @@ function App() {
 
   return (
     <div>
-      <nav>This is nav</nav>
+      <Navbar />
       <ArtistsList artists={artists} />
     </div>
   );
