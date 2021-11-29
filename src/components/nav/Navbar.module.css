@@ -1,0 +1,10 @@
+.navbar {
+  overflow: hidden;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.26);
+  background-color: lightslategray;
+}
+
+.navbar-right {
+  float: right;
+  color: white;
+}
