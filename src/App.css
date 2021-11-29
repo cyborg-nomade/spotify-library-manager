@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.search-label {
+  color: white;
+  background-color: #303030;
+  font-size: 72px;
+}

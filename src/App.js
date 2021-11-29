@@ -1,5 +1,8 @@
 import ArtistsList from "./components/artists/ArtistsList";
 import Navbar from "./components/nav/Navbar";
+import Card from "./components/UI/Card";
+
+import "./App.css";
 
 function App() {
   const artists = [
@@ -40,6 +43,7 @@ function App() {
   return (
     <div>
       <Navbar />
+      <Card className="search-label">Hi</Card>
       <ArtistsList artists={artists} />
     </div>
   );
