@@ -1,6 +1,7 @@
 import Card from "../UI/Card";
 import "./ArtistsListItem.css";
 import React from "react";
+import Button from "../UI/Button";
 
 const ArtistsListItem = (props) => {
   return (
@@ -15,7 +16,7 @@ const ArtistsListItem = (props) => {
         <h2> {props.followers} </h2>
         <h2> {props.genres[0]} </h2>
         <h2> {props.popularity[0]} </h2>
-        <div className="artist-item__remove">Add/Remove</div>
+        <Button>Show Details</Button>
       </div>
     </Card>
   );

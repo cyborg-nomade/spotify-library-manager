@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "../UI/Button";
 
 import classes from "./Navbar.module.css";
 
@@ -8,7 +9,7 @@ const Navbar = (props) => {
       <div className={classes["navbar-right"]}>
         <label htmlFor="search-bar">Search</label>
         <input type="search" name="" id="search-bar" />
-        <button type="submit">OK</button>
+        <Button type="submit">OK</Button>
       </div>
     </nav>
   );
