@@ -5,3 +5,8 @@
   width: 50rem;
   max-width: 95%;
 }
+
+.artist-details {
+  max-width: 100%;
+  height: auto;
+}

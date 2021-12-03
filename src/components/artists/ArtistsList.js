@@ -1,17 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Card from "../UI/Card";
 import ArtistsListItem from "./ArtistsListItem";
 import classes from "./ArtistsList.module.css";
-import ErrorModal from "../UI/ErrorModal";
+import Modal from "../UI/Modal";
 
 const ArtistsList = (props) => {
+  const [display, setDisplay] = useState();
+
+  const modalDismissHandler = () => {
+    setDisplay(null);
+  };
+
+  const showDetailsHandler = (artist) => {
+    setDisplay({
+      title: "Artists Name",
+      message: (
+        <ul>
+          <img
+            src={artist.image}
+            alt="artist"
+            className={classes["artist-details"]}
+          ></img>
+          <a href={artist.uri}>Profile</a>
+          <li>{artist.followers} Followers</li>
+          <li>Genres:</li>
+          <ol>
+            {artist.genres.map((genre) => (
+              <li>{genre}</li>
+            ))}
+          </ol>
+          <li>Popularity: {artist.popularity}</li>
+        </ul>
+      ),
+    });
+  };
+
   return (
     <div>
-      <ErrorModal
-        title={props.artists[0].name}
-        message={props.artists[0].image}
-      />
+      {display && (
+        <Modal
+          title={display.title}
+          message={display.message}
+          onDismiss={modalDismissHandler}
+        />
+      )}
       <Card className={classes.artists}>
         {props.artists.map((artist) => (
           <ArtistsListItem
@@ -21,6 +54,7 @@ const ArtistsList = (props) => {
             followers={artist.followers}
             genres={artist.genres}
             popularity={artist.popularity}
+            onShowDetails={() => showDetailsHandler(artist)}
           />
         ))}
       </Card>

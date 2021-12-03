@@ -13,10 +13,10 @@ const ArtistsListItem = (props) => {
         <a href={props.uri}>
           <h2>{props.name}</h2>
         </a>
-        <h2> {props.followers} </h2>
+        {/* <h2> {props.followers} </h2> */}
         <h2> {props.genres[0]} </h2>
-        <h2> {props.popularity} </h2>
-        <Button>Show Details</Button>
+        {/* <h2> {props.popularity} </h2> */}
+        <Button onClick={props.onShowDetails}>Show Details</Button>
       </div>
     </Card>
   );
