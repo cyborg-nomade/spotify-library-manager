@@ -6,18 +6,11 @@ import classes from "./ArtistsListItem.module.css";
 const ArtistsListItem = (props) => {
   return (
     <Card className={classes["artist-item"]}>
-      <div>
-        <img src={props.image} alt="artist" />
-      </div>
-      <div className={classes["artist-item__description"]}>
-        <a href={props.uri}>
-          <h2>{props.name}</h2>
-        </a>
-        {/* <h2> {props.followers} </h2> */}
-        <h2> {props.genres[0]} </h2>
-        {/* <h2> {props.popularity} </h2> */}
-        <Button onClick={props.onShowDetails}>Show Details</Button>
-      </div>
+      <img src={props.image} alt="artist" />
+      <a href={props.uri}>
+        <h2>{props.name}</h2>
+      </a>
+      <Button onClick={props.onShowDetails}>Show Details</Button>
     </Card>
   );
 };

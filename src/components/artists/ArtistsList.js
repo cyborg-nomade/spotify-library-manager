@@ -22,7 +22,9 @@ const ArtistsList = (props) => {
             alt="artist"
             className={classes["artist-details"]}
           ></img>
-          <a href={artist.uri}>Profile</a>
+          <li>
+            <a href={artist.uri}>Profile</a>
+          </li>
           <li>{artist.followers} Followers</li>
           <li>Genres:</li>
           <ol>
