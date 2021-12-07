@@ -6,7 +6,7 @@
   padding: 0.5rem;
   margin: 1rem 0;
   border-radius: 12px;
-  background-color: #4b4b4b;
+  background-color: #303030;
 }
 
 .artist-item__description {
@@ -36,7 +36,7 @@
   font-size: 1rem;
   font-weight: bold;
   color: white;
-  background-color: #40005d;
+  background-color: #0b5d00;
   border: 1px solid white;
   padding: 0.5rem;
   border-radius: 12px;

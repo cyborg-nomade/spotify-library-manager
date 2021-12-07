@@ -1,38 +1,66 @@
-import ArtistsListItem from "./ArtistsListItem";
+import React, { useState } from "react";
+
 import Card from "../UI/Card";
-import "./ArtistsList.css";
-import React from "react";
+import ArtistsListItem from "./ArtistsListItem";
+import classes from "./ArtistsList.module.css";
+import Modal from "../UI/Modal";
 
 const ArtistsList = (props) => {
-  const artists = props.artists;
+  const [display, setDisplay] = useState();
+
+  const modalDismissHandler = () => {
+    setDisplay(null);
+  };
+
+  const showDetailsHandler = (artist) => {
+    setDisplay({
+      title: "Artists Name",
+      message: (
+        <ul>
+          <img
+            src={artist.image}
+            alt="artist"
+            className={classes["artist-details"]}
+          ></img>
+          <li>
+            <a href={artist.uri}>Profile</a>
+          </li>
+          <li>{artist.followers} Followers</li>
+          <li>Genres:</li>
+          <ol>
+            {artist.genres.map((genre) => (
+              <li>{genre}</li>
+            ))}
+          </ol>
+          <li>Popularity: {artist.popularity}</li>
+        </ul>
+      ),
+    });
+  };
 
   return (
-    <Card className="artists">
-      <ArtistsListItem
-        image={artists[0].image}
-        name={artists[0].name}
-        uri={artists[0].uri}
-        followers={artists[0].followers}
-        genres={artists[0].genres}
-        popularity={artists[0].popularity}
-      />
-      <ArtistsListItem
-        image={artists[1].image}
-        name={artists[1].name}
-        uri={artists[1].uri}
-        followers={artists[1].followers}
-        genres={artists[1].genres}
-        popularity={artists[1].popularity}
-      />
-      <ArtistsListItem
-        image={artists[2].image}
-        name={artists[2].name}
-        uri={artists[2].uri}
-        followers={artists[2].followers}
-        genres={artists[2].genres}
-        popularity={artists[2].popularity}
-      />
-    </Card>
+    <div>
+      {display && (
+        <Modal
+          title={display.title}
+          message={display.message}
+          onDismiss={modalDismissHandler}
+        />
+      )}
+      <Card className={classes.artists}>
+        {props.artists.map((artist) => (
+          <ArtistsListItem
+            image={artist.image}
+            name={artist.name}
+            uri={artist.uri}
+            followers={artist.followers}
+            genres={artist.genres}
+            popularity={artist.popularity}
+            onShowDetails={() => showDetailsHandler(artist)}
+          />
+        ))}
+      </Card>
+    </div>
   );
 };
 
