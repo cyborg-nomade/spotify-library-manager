@@ -49,11 +49,11 @@ function App() {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <Navbar onSearchTermChanged={searchBarChangedHandler} />
       <Card className="search-label">{searchedTerm}</Card>
       <ArtistsList artists={artists} />
-    </div>
+    </React.Fragment>
   );
 }
 

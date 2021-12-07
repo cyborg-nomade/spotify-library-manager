@@ -39,7 +39,7 @@ const ArtistsList = (props) => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       {display && (
         <Modal
           title={display.title}
@@ -60,7 +60,7 @@ const ArtistsList = (props) => {
           />
         ))}
       </Card>
-    </div>
+    </React.Fragment>
   );
 };
 
