@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 
 import ArtistsList from "./components/artists/ArtistsList";
-import Navbar from "./components/nav/Navbar";
 import Card from "./components/UI/Card";
 
 import "./App.css";
 import Login from "./components/auth/Login";
+import MainHeader from "./components/nav/MainHeader";
+import AuthContext from "./store/auth-context";
+import SearchContext from "./store/search-context";
 
 function App() {
   const artists = [
@@ -43,44 +45,18 @@ function App() {
     },
   ];
 
-  const [searchedTerm, setSearchedTerm] = useState("");
-
-  const searchBarChangedHandler = (event) => {
-    setSearchedTerm(event.target.value);
-  };
-
-  // basic login logic
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const storedLoginInfo = localStorage.getItem("isLoggedIn");
-
-    if (storedLoginInfo === "1") {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  const loginHandler = (email, password) => {
-    localStorage.setItem("isLoggedIn", "1");
-    setIsLoggedIn(true);
-  };
-
-  const logoutHandler = () => {
-    localStorage.removeItem("isLoggedIn");
-    setIsLoggedIn(false);
-  };
+  const authContext = useContext(AuthContext);
+  const searchContext = useContext(SearchContext);
 
   return (
     <React.Fragment>
-      <Navbar
-        isAuthenticated={isLoggedIn}
-        onLogout={logoutHandler}
-        onSearchTermChanged={searchBarChangedHandler}
-      />
+      <MainHeader />
       <main>
-        {!isLoggedIn && <Login onLogin={loginHandler} />}
-        {isLoggedIn && <Card className="search-label">{searchedTerm}</Card>}
-        {isLoggedIn && <ArtistsList artists={artists} />}
+        {!authContext.isLoggedIn && <Login />}
+        {authContext.isLoggedIn && (
+          <Card className="search-label">{searchContext.searchedTerm}</Card>
+        )}
+        {authContext.isLoggedIn && <ArtistsList artists={artists} />}
       </main>
     </React.Fragment>
   );

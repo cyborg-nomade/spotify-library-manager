@@ -1,11 +1,15 @@
 import React, { useContext } from "react";
+
 import AuthContext from "../../store/auth-context";
+import SearchContext from "./../../store/search-context";
+
 import Button from "../UI/Button";
 
 import classes from "./Navbar.module.css";
 
 const Navbar = (props) => {
   const authContext = useContext(AuthContext);
+  const searchContext = useContext(SearchContext);
 
   return (
     <nav className={`${classes.navbar} ${classes.nav}`}>
@@ -38,13 +42,13 @@ const Navbar = (props) => {
             <input
               type="search"
               id="search-bar"
-              onChange={props.onSearchTermChanged}
+              onChange={searchContext.onSearchTermChanged}
             />
           </li>
         )}
         {authContext.isLoggedIn && (
           <li>
-            <button onClick={props.onLogout}>Logout</button>
+            <Button onClick={authContext.onLogout}>Logout</Button>
           </li>
         )}
       </ul>
