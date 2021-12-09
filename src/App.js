@@ -1,10 +1,13 @@
+import React, { useContext } from "react";
+
 import ArtistsList from "./components/artists/ArtistsList";
-import Navbar from "./components/nav/Navbar";
 import Card from "./components/UI/Card";
 
 import "./App.css";
-
-import React, { useState } from "react";
+import Login from "./components/auth/Login";
+import MainHeader from "./components/nav/MainHeader";
+import AuthContext from "./store/auth-context";
+import SearchContext from "./store/search-context";
 
 function App() {
   const artists = [
@@ -42,17 +45,19 @@ function App() {
     },
   ];
 
-  const [searchedTerm, setSearchedTerm] = useState("");
-
-  const searchBarChangedHandler = (event) => {
-    setSearchedTerm(event.target.value);
-  };
+  const authContext = useContext(AuthContext);
+  const searchContext = useContext(SearchContext);
 
   return (
     <React.Fragment>
-      <Navbar onSearchTermChanged={searchBarChangedHandler} />
-      <Card className="search-label">{searchedTerm}</Card>
-      <ArtistsList artists={artists} />
+      <MainHeader />
+      <main>
+        {!authContext.isLoggedIn && <Login />}
+        {authContext.isLoggedIn && (
+          <Card className="search-label">{searchContext.searchedTerm}</Card>
+        )}
+        {authContext.isLoggedIn && <ArtistsList artists={artists} />}
+      </main>
     </React.Fragment>
   );
 }

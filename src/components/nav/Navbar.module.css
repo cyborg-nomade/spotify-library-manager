@@ -1,10 +1,47 @@
-.navbar {
-  overflow: hidden;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.26);
-  background-color: #424242;
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-content: space-between;
+  align-items: baseline;
+  width: 100%;
 }
 
 .navbar-right {
   float: right;
   color: white;
+  margin: auto;
+}
+
+.navbar-left {
+  float: left;
+  color: white;
+  margin: auto;
+}
+
+.nav h1 {
+  color: green;
+  margin: auto;
+}
+
+.nav ul {
+  list-style: none;
+  margin: auto;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.nav li {
+  margin: 0;
+  margin-left: 2rem;
+}
+
+.nav a {
+  text-decoration: none;
+  color: white;
+}
+
+.nav a:hover,
+.nav a:active {
+  color: #cafbcc;
 }
