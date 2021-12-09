@@ -1,10 +1,10 @@
+import React, { useState, useEffect } from "react";
+
 import ArtistsList from "./components/artists/ArtistsList";
 import Navbar from "./components/nav/Navbar";
 import Card from "./components/UI/Card";
 
 import "./App.css";
-
-import React, { useState } from "react";
 
 function App() {
   const artists = [
@@ -46,6 +46,27 @@ function App() {
 
   const searchBarChangedHandler = (event) => {
     setSearchedTerm(event.target.value);
+  };
+
+  // basic login logic
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedLoginInfo = localStorage.getItem("isLoggedIn");
+
+    if (storedLoginInfo === "1") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const loginHandler = (email, password) => {
+    localStorage.setItem("isLoggedIn", "1");
+    setIsLoggedIn(true);
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
   };
 
   return (
