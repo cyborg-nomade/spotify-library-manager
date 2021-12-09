@@ -10,6 +10,7 @@ export const SearchContextProvider = (props) => {
 
   const searchBarChangedHandler = (event) => {
     setSearchedTerm(event.target.value);
+    console.log(searchedTerm);
   };
 
   return (

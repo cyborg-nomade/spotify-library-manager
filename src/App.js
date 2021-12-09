@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 
 import ArtistsList from "./components/artists/ArtistsList";
 import Card from "./components/UI/Card";

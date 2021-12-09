@@ -50,6 +50,7 @@ const ArtistsList = (props) => {
       <Card className={classes.artists}>
         {props.artists.map((artist) => (
           <ArtistsListItem
+            key={artist.uri}
             image={artist.image}
             name={artist.name}
             uri={artist.uri}

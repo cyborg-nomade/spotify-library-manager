@@ -12,8 +12,9 @@ const Navbar = (props) => {
   const searchContext = useContext(SearchContext);
 
   return (
-    <nav className={`${classes.navbar} ${classes.nav}`}>
-      <ul>
+    <nav className={`${classes.nav}`}>
+      <h1>SLM</h1>
+      <ul className={classes["navbar-left"]}>
         {authContext.isLoggedIn && (
           <li>
             <a href="/">Artists</a>
@@ -38,7 +39,7 @@ const Navbar = (props) => {
       <ul className={classes["navbar-right"]}>
         {authContext.isLoggedIn && (
           <li>
-            <label htmlFor="search-bar"> Search:</label>
+            <label htmlFor="search-bar"> Search: </label>
             <input
               type="search"
               id="search-bar"
