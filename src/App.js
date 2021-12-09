@@ -5,6 +5,7 @@ import Navbar from "./components/nav/Navbar";
 import Card from "./components/UI/Card";
 
 import "./App.css";
+import Login from "./components/auth/Login";
 
 function App() {
   const artists = [
@@ -71,9 +72,16 @@ function App() {
 
   return (
     <React.Fragment>
-      <Navbar onSearchTermChanged={searchBarChangedHandler} />
-      <Card className="search-label">{searchedTerm}</Card>
-      <ArtistsList artists={artists} />
+      <Navbar
+        isAuthenticated={isLoggedIn}
+        onLogout={logoutHandler}
+        onSearchTermChanged={searchBarChangedHandler}
+      />
+      <main>
+        {!isLoggedIn && <Login onLogin={loginHandler} />}
+        {isLoggedIn && <Card className="search-label">{searchedTerm}</Card>}
+        {isLoggedIn && <ArtistsList artists={artists} />}
+      </main>
     </React.Fragment>
   );
 }
