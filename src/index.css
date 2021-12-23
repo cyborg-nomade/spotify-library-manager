@@ -11,6 +11,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.login-page {
+  text-align: center;
+}
+
+.spotifyBtn {
+  margin: 0 auto;
+  display: block;
+  margin: auto;
+  text-align: center;
+  text-align: center;
+  display: inline-block;
+  justify-content: center;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
