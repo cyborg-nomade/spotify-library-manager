@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { SpotifyApiContext } from "react-spotify-api";
 import { SpotifyAuth, Scopes } from "react-spotify-auth";
-import { Cookies } from "js-cookie";
+import Cookies from "js-cookie";
 
 import Card from "./components/UI/Card";
 import MainHeader from "./components/nav/MainHeader";
@@ -67,7 +67,7 @@ function App() {
         // Display the login page
         <SpotifyAuth
           redirectUri="http://localhost:3000/callback"
-          clientID="1a70ba777fec4ffd9633c0c418bdcf39"
+          clientID="03e028b307ca44d687a7445042a004ef"
           scopes={[Scopes.userReadPrivate, "user-read-email"]} // either style will work
           onAccessToken={(token) => setToken(token)}
         />
