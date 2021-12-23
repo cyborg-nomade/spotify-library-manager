@@ -1,13 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { SpotifyApiContext } from "react-spotify-api";
+import { SpotifyAuth, Scopes } from "react-spotify-auth";
+import { Cookies } from "js-cookie";
 
-import ArtistsList from "./components/artists/ArtistsList";
 import Card from "./components/UI/Card";
+import MainHeader from "./components/nav/MainHeader";
+import ArtistsList from "./components/artists/ArtistsList";
+
+import SearchContext from "./store/search-context";
 
 import "./App.css";
-import Login from "./components/auth/Login";
-import MainHeader from "./components/nav/MainHeader";
-import AuthContext from "./store/auth-context";
-import SearchContext from "./store/search-context";
+import "react-spotify-auth/dist/index.css";
 
 function App() {
   const artists = [
@@ -45,19 +48,30 @@ function App() {
     },
   ];
 
-  const authContext = useContext(AuthContext);
+  const [token, setToken] = useState(Cookies.get("spotifyAuthToken"));
+
   const searchContext = useContext(SearchContext);
 
   return (
     <React.Fragment>
-      <MainHeader />
-      <main>
-        {!authContext.isLoggedIn && <Login />}
-        {authContext.isLoggedIn && (
-          <Card className="search-label">{searchContext.searchedTerm}</Card>
-        )}
-        {authContext.isLoggedIn && <ArtistsList artists={artists} />}
-      </main>
+      {token ? (
+        <SpotifyApiContext.Provider value={token}>
+          <MainHeader />
+          <main>
+            <Card className="search-label">{searchContext.searchedTerm}</Card>
+            <ArtistsList artists={artists} />
+          </main>
+          <p>You are authorized with token: {token}</p>
+        </SpotifyApiContext.Provider>
+      ) : (
+        // Display the login page
+        <SpotifyAuth
+          redirectUri="http://localhost:3000/callback"
+          clientID="1a70ba777fec4ffd9633c0c418bdcf39"
+          scopes={[Scopes.userReadPrivate, "user-read-email"]} // either style will work
+          onAccessToken={(token) => setToken(token)}
+        />
+      )}
     </React.Fragment>
   );
 }
