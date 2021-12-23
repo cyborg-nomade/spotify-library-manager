@@ -15,29 +15,29 @@ const Navbar = (props) => {
     <nav className={`${classes.nav}`}>
       <h1>SLM</h1>
       <ul className={classes["navbar-left"]}>
-        {authContext.isLoggedIn && (
+        {authContext.token && (
           <li>
             <a href="/">Artists</a>
           </li>
         )}
-        {authContext.isLoggedIn && (
+        {authContext.token && (
           <li>
             <a href="/">Albums</a>
           </li>
         )}
-        {authContext.isLoggedIn && (
+        {authContext.token && (
           <li>
             <a href="/">Songs</a>
           </li>
         )}
-        {authContext.isLoggedIn && (
+        {authContext.token && (
           <li>
             <a href="/">Playlist</a>
           </li>
         )}
       </ul>
       <ul className={classes["navbar-right"]}>
-        {authContext.isLoggedIn && (
+        {authContext.token && (
           <li>
             <label htmlFor="search-bar"> Search: </label>
             <input
@@ -47,7 +47,7 @@ const Navbar = (props) => {
             />
           </li>
         )}
-        {authContext.isLoggedIn && (
+        {authContext.token && (
           <li>
             <Button onClick={authContext.onLogout}>Logout</Button>
           </li>
