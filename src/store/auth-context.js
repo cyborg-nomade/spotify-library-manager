@@ -1,36 +1,36 @@
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const AuthContext = React.createContext({
-  isLoggedIn: false,
+  token: Cookies.get("spotifyAuthToken"),
   onLogout: () => {},
-  onLogin: (email, password) => {},
+  onLogin: (token) => {},
 });
 
 export const AuthContextProvider = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(Cookies.get("spotifyAuthToken"));
 
   useEffect(() => {
-    const storedLoginInfo = localStorage.getItem("isLoggedIn");
+    const storedToken = Cookies.get("spotifyAuthToken");
 
-    if (storedLoginInfo === "1") {
-      setIsLoggedIn(true);
+    if (storedToken) {
+      setToken(storedToken);
     }
   }, []);
 
   const logoutHandler = () => {
-    localStorage.removeItem("isLoggedIn");
-    setIsLoggedIn(false);
+    Cookies.remove("spotifyAuthToken");
+    setToken(null);
   };
 
-  const loginHandler = () => {
-    localStorage.setItem("isLoggedIn", "1");
-    setIsLoggedIn(true);
+  const loginHandler = (token) => {
+    setToken(token)
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: isLoggedIn,
+        token: token,
         onLogout: logoutHandler,
         onLogin: loginHandler,
       }}
