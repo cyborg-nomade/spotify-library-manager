@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { UserArtists } from "react-spotify-api";
 
 import Card from "../UI/Card";
 import ArtistsListItem from "./ArtistsListItem";
-import classes from "./ArtistsList.module.css";
 import Modal from "../UI/Modal";
+
+import classes from "./ArtistsList.module.css";
 
 const ArtistsList = (props) => {
   const [display, setDisplay] = useState();
@@ -18,7 +20,7 @@ const ArtistsList = (props) => {
       message: (
         <ul>
           <img
-            src={artist.image}
+            src={artist.image[0].url}
             alt="artist"
             className={classes["artist-details"]}
           ></img>
@@ -48,18 +50,36 @@ const ArtistsList = (props) => {
         />
       )}
       <Card className={classes.artists}>
-        {props.artists.map((artist) => (
-          <ArtistsListItem
-            key={artist.uri}
-            image={artist.image}
-            name={artist.name}
-            uri={artist.uri}
-            followers={artist.followers}
-            genres={artist.genres}
-            popularity={artist.popularity}
-            onShowDetails={() => showDetailsHandler(artist)}
-          />
-        ))}
+        <UserArtists>
+          {(artists, loading, error) => {
+            console.log(artists.data);
+
+            if (artists.data) {
+              console.log(artists.data);
+              return artists.data.artists.items.map((artist) => {
+                console.log(artist.name);
+                return (
+                  <React.Fragment>
+                    <h1>{artists.data.artists.total}</h1>
+                    <ArtistsListItem
+                      key={artist.uri}
+                      image={artist.images[0].url}
+                      name={artist.name}
+                      uri={artist.uri}
+                      followers={artist.followers.total}
+                      genres={artist.genres}
+                      popularity={artist.popularity}
+                      onShowDetails={() => showDetailsHandler(artist)}
+                    />
+                  </React.Fragment>
+                );
+              });
+            } else {
+              console.log("No artists here");
+              return null;
+            }
+          }}
+        </UserArtists>
       </Card>
     </React.Fragment>
   );
