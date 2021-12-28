@@ -6,8 +6,6 @@ import Button from "../UI/Button";
 import classes from "./ArtistsListItem.module.css";
 
 const ArtistsListItem = (props) => {
-  console.log("ali");
-  console.log(props);
   return (
     <Card className={classes["artist-item"]}>
       <img src={props.image} alt="artist" />

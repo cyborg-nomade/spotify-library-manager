@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { SpotifyApiContext } from "react-spotify-api";
+import { SpotifyApiContext, UserAlbums } from "react-spotify-api";
 import { SpotifyAuth, Scopes } from "react-spotify-auth";
 import { MDBContainer } from "mdbreact";
 
@@ -25,6 +25,20 @@ function App() {
             <MainHeader />
             <main>
               <Card className="search-label">{searchContext.searchedTerm}</Card>
+              <Card>
+                <UserAlbums>
+                  {(albums, loading, error) => {
+                    if (albums.data && !albums.loading) {
+                      console.log(albums.data);
+
+                      return <Card>{albums.data.total}</Card>;
+                    } else {
+                      console.log("No albums");
+                      return <h1>No albums</h1>;
+                    }
+                  }}
+                </UserAlbums>
+              </Card>
               <ArtistsList />
             </main>
             <p>You are authorized with token: {authContext.token}</p>
@@ -42,6 +56,7 @@ function App() {
                   Scopes.userReadPrivate,
                   "user-read-email",
                   "user-follow-read",
+                  "user-library-read",
                 ]} // either style will work
                 onAccessToken={(token) => authContext.onLogin(token)}
               />

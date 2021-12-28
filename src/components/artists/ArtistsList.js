@@ -20,7 +20,7 @@ const ArtistsList = (props) => {
       message: (
         <ul>
           <img
-            src={artist.image[0].url}
+            src={artist.images[0].url}
             alt="artist"
             className={classes["artist-details"]}
           ></img>
@@ -52,31 +52,32 @@ const ArtistsList = (props) => {
       <Card className={classes.artists}>
         <UserArtists>
           {(artists, loading, error) => {
-            console.log(artists.data);
-
-            if (artists.data) {
-              console.log(artists.data);
-              return artists.data.artists.items.map((artist) => {
-                console.log(artist.name);
-                return (
-                  <React.Fragment>
-                    <h1>{artists.data.artists.total}</h1>
-                    <ArtistsListItem
-                      key={artist.uri}
-                      image={artist.images[0].url}
-                      name={artist.name}
-                      uri={artist.uri}
-                      followers={artist.followers.total}
-                      genres={artist.genres}
-                      popularity={artist.popularity}
-                      onShowDetails={() => showDetailsHandler(artist)}
-                    />
-                  </React.Fragment>
-                );
-              });
+            if (artists.data && !artists.loading) {
+              return (
+                <React.Fragment>
+                  <Card>Total Artists: {artists.data.artists.total}</Card>
+                  <Card>
+                    {artists.data.artists.items.map((artist) => {
+                      return (
+                        <React.Fragment>
+                          <ArtistsListItem
+                            key={artist.uri}
+                            image={artist.images[0].url}
+                            name={artist.name}
+                            uri={artist.uri}
+                            followers={artist.followers.total}
+                            genres={artist.genres}
+                            popularity={artist.popularity}
+                            onShowDetails={() => showDetailsHandler(artist)}
+                          />
+                        </React.Fragment>
+                      );
+                    })}
+                  </Card>
+                </React.Fragment>
+              );
             } else {
-              console.log("No artists here");
-              return null;
+              return <h1>No artists here</h1>;
             }
           }}
         </UserArtists>
