@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { UserArtists } from "react-spotify-api";
+import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
 
 import Card from "../UI/Card";
 import ArtistsListItem from "./ArtistsListItem";
@@ -40,6 +41,8 @@ const ArtistsList = (props) => {
     });
   };
 
+  const artistRowRenderer = (artistsObject) => {};
+
   return (
     <React.Fragment>
       {display && (
@@ -51,16 +54,14 @@ const ArtistsList = (props) => {
       )}
       <Card className={classes.artists}>
         <UserArtists>
-          {(artists, loading, error) => {
-            if (artists.data && !artists.loading) {
-              let artistsArray = artists.data.artists.items;
+          {({ data: artists, loading, loadMoreData }) => {
+            if (artists && !loading) {
+              let artistsArray = artists.artists.items;
               artistsArray.sort((a, b) => a.name.localeCompare(b.name));
-
-              console.log(artistsArray);
 
               return (
                 <React.Fragment>
-                  <Card>Total Artists: {artists.data.artists.total}</Card>
+                  <Card>Total Artists: {artists.artists.total}</Card>
                   <Card>
                     {artistsArray.map((artist) => {
                       return (
