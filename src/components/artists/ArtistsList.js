@@ -53,24 +53,27 @@ const ArtistsList = (props) => {
         <UserArtists>
           {(artists, loading, error) => {
             if (artists.data && !artists.loading) {
+              let artistsArray = artists.data.artists.items;
+              artistsArray.sort((a, b) => a.name.localeCompare(b.name));
+
+              console.log(artistsArray);
+
               return (
                 <React.Fragment>
                   <Card>Total Artists: {artists.data.artists.total}</Card>
                   <Card>
-                    {artists.data.artists.items.map((artist) => {
+                    {artistsArray.map((artist) => {
                       return (
-                        <React.Fragment>
-                          <ArtistsListItem
-                            key={artist.uri}
-                            image={artist.images[0].url}
-                            name={artist.name}
-                            uri={artist.uri}
-                            followers={artist.followers.total}
-                            genres={artist.genres}
-                            popularity={artist.popularity}
-                            onShowDetails={() => showDetailsHandler(artist)}
-                          />
-                        </React.Fragment>
+                        <ArtistsListItem
+                          key={artist.uri}
+                          image={artist.images[0].url}
+                          name={artist.name}
+                          uri={artist.uri}
+                          followers={artist.followers.total}
+                          genres={artist.genres}
+                          popularity={artist.popularity}
+                          onShowDetails={() => showDetailsHandler(artist)}
+                        />
                       );
                     })}
                   </Card>
