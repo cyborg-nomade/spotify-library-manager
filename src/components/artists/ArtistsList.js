@@ -14,6 +14,7 @@ const ArtistsList = (props) => {
   const [display, setDisplay] = useState();
   const [totalFollowedArtists, setTotalFollowedArtists] = useState(0);
   const [allFollowedArtists, setAllFollowedArtists] = useState([]);
+  const [after, setAfter] = useState();
 
   const modalDismissHandler = () => {
     setDisplay(null);
@@ -47,6 +48,10 @@ const ArtistsList = (props) => {
     });
   };
 
+  function sleep(milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  }
+
   const getTotalFollowedArtists = useCallback(async () => {
     let spotifyApi = new SpotifyWebApi();
 
@@ -64,13 +69,34 @@ const ArtistsList = (props) => {
     if (authContext.token) {
       spotifyApi.setAccessToken(authContext.token);
       await spotifyApi.getFollowedArtists({ limit: 50 }, (error, result) => {
-        setAllFollowedArtists(
-          result.artists.items.sort((a, b) => a.name.localeCompare(b.name))
-        );
+        setAllFollowedArtists(result.artists.items);
+        setAfter(result.artists.cursors.after);
       });
+
+      if (allFollowedArtists.length < totalFollowedArtists) {
+        await spotifyApi.getFollowedArtists(
+          { limit: 50, after: after },
+          (error, result) => {
+            if (error) {
+              console.log(error);
+              return;
+            }
+            setAfter(result.artists.cursors.after);
+            setAllFollowedArtists((artistsArray) => [
+              ...artistsArray,
+              ...result.artists.items,
+            ]);
+          }
+        );
+        await sleep(500);
+      }
     }
-    return;
-  }, [authContext.token]);
+    const sortedArray = allFollowedArtists.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    const uniqArray = [...new Set(sortedArray)];
+    setAllFollowedArtists(uniqArray);
+  }, [authContext.token, after, allFollowedArtists, totalFollowedArtists]);
 
   useEffect(() => {
     getTotalFollowedArtists();
