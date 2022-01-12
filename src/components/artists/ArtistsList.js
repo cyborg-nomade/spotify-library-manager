@@ -1,14 +1,19 @@
-import React, { useState } from "react";
-import { UserArtists } from "react-spotify-api";
+import React, { useState, useContext, useEffect, useCallback } from "react";
+import SpotifyWebApi from "spotify-web-api-js";
 
 import Card from "../UI/Card";
 import ArtistsListItem from "./ArtistsListItem";
 import Modal from "../UI/Modal";
 
 import classes from "./ArtistsList.module.css";
+import AuthContext from "../../store/auth-context";
 
 const ArtistsList = (props) => {
+  const authContext = useContext(AuthContext);
+
   const [display, setDisplay] = useState();
+  const [totalFollowedArtists, setTotalFollowedArtists] = useState(0);
+  const [allFollowedArtists, setAllFollowedArtists] = useState([]);
 
   const modalDismissHandler = () => {
     setDisplay(null);
@@ -18,11 +23,11 @@ const ArtistsList = (props) => {
     console.log(artist);
 
     setDisplay({
-      title: "Artists Name",
+      title: artist.name,
       message: (
         <ul>
           <img
-            src={artist.images[0].url}
+            src={artist.images[0]?.url}
             alt="artist"
             className={classes["artist-details"]}
           ></img>
@@ -42,51 +47,35 @@ const ArtistsList = (props) => {
     });
   };
 
-  const totalArtists = (total) => {
-    return <Card>Total Artists: {total}</Card>;
-  };
+  const getTotalFollowedArtists = useCallback(async () => {
+    let spotifyApi = new SpotifyWebApi();
 
-  const artistsArrayRenderer = (artistsArray) => {
-    return (
-      <Card>
-        {artistsArray.map((artist) => {
-          return (
-            <ArtistsListItem
-              key={artist.uri}
-              image={artist.images[0].url}
-              name={artist.name}
-              uri={artist.uri}
-              followers={artist.followers.total}
-              genres={artist.genres}
-              popularity={artist.popularity}
-              onShowDetails={() => showDetailsHandler(artist)}
-            />
-          );
-        })}
-      </Card>
-    );
-  };
-
-  let artistsListRenderer = ({ data: artists, loading, loadMoreData }) => {
-    if (artists && !loading) {
-      console.log(artists.artists.next);
-      console.log(artists.artists.items);
-      loadMoreData();
-      console.log(artists.artists.next);
-
-      let artistsArray = artists.artists.items;
-      artistsArray.sort((a, b) => a.name.localeCompare(b.name));
-
-      return (
-        <React.Fragment>
-          {totalArtists(artists.artists.total)}
-          {artistsArrayRenderer(artistsArray)}
-        </React.Fragment>
-      );
-    } else {
-      return <h1>No artists here</h1>;
+    if (authContext.token) {
+      spotifyApi.setAccessToken(authContext.token);
+      await spotifyApi.getFollowedArtists({ limit: 50 }, (error, result) => {
+        setTotalFollowedArtists(result.artists.total);
+      });
     }
-  };
+  }, [authContext.token]);
+
+  const getAllFollowedArtists = useCallback(async () => {
+    let spotifyApi = new SpotifyWebApi();
+
+    if (authContext.token) {
+      spotifyApi.setAccessToken(authContext.token);
+      await spotifyApi.getFollowedArtists({ limit: 50 }, (error, result) => {
+        setAllFollowedArtists(
+          result.artists.items.sort((a, b) => a.name.localeCompare(b.name))
+        );
+      });
+    }
+    return;
+  }, [authContext.token]);
+
+  useEffect(() => {
+    getTotalFollowedArtists();
+    getAllFollowedArtists();
+  }, [getAllFollowedArtists, getTotalFollowedArtists]);
 
   return (
     <React.Fragment>
@@ -97,9 +86,31 @@ const ArtistsList = (props) => {
           onDismiss={modalDismissHandler}
         />
       )}
-      <Card className={classes.artists}>
-        <UserArtists>{artistsListRenderer}</UserArtists>
-      </Card>
+      {authContext.token ? (
+        <Card className={classes.artists}>
+          <Card>Total Followed Artists: {totalFollowedArtists}</Card>
+          {allFollowedArtists ? (
+            <Card>
+              {allFollowedArtists.map((artist) => {
+                return (
+                  <ArtistsListItem
+                    key={artist.uri}
+                    image={artist.images[0]?.url}
+                    name={artist.name}
+                    uri={artist.uri}
+                    followers={artist.followers.total}
+                    genres={artist.genres}
+                    popularity={artist.popularity}
+                    onShowDetails={() => showDetailsHandler(artist)}
+                  />
+                );
+              })}
+            </Card>
+          ) : null}
+        </Card>
+      ) : (
+        <h1>Loading...</h1>
+      )}
     </React.Fragment>
   );
 };

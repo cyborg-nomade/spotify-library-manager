@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
-import { SpotifyApiContext, UserAlbums } from "react-spotify-api";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { SpotifyAuth, Scopes } from "react-spotify-auth";
 import { MDBContainer } from "mdbreact";
 import SpotifyWebApi from "spotify-web-api-js";
@@ -20,32 +19,34 @@ function App() {
   const authContext = useContext(AuthContext);
   const searchContext = useContext(SearchContext);
 
-  let spotifyApi = new SpotifyWebApi();
-
-  const getTotalAlbumsSaved = () => {
+  const getTotalAlbumsSaved = useCallback(async () => {
+    let spotifyApi = new SpotifyWebApi();
     if (authContext.token) {
       spotifyApi.setAccessToken(authContext.token);
-      spotifyApi.getMySavedAlbums({}, (error, result) => {
+      await spotifyApi.getMySavedAlbums({}, (error, result) => {
         console.log(result);
         setTotalAlbumsSaved(result.total);
       });
     }
-    return <Card>Total Albums Saved: {totalAlbumsSaved}</Card>;
-  };
+  }, [authContext.token]);
+
+  useEffect(() => {
+    getTotalAlbumsSaved();
+  }, [getTotalAlbumsSaved]);
 
   return (
     <React.Fragment>
       <MDBContainer>
         {authContext.token ? (
-          <SpotifyApiContext.Provider value={authContext.token}>
+          <React.Fragment>
             <MainHeader />
             <main>
               <Card className="search-label">{searchContext.searchedTerm}</Card>
-              {getTotalAlbumsSaved()}
+              <Card>Total Albums Saved: {totalAlbumsSaved}</Card>
               <ArtistsList />
             </main>
             <p>You are authorized with token: {authContext.token}</p>
-          </SpotifyApiContext.Provider>
+          </React.Fragment>
         ) : (
           <div className="login-page">
             <h1>Welcome to Spotify Library Manager</h1>

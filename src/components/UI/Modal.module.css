@@ -9,12 +9,13 @@
 }
 
 .modal {
-  position: absolute;
+  position: fixed;
   top: 10vh;
   left: 10%;
   width: 80%;
+  height: auto;
   z-index: 100;
-  overflow: auto;
+  overflow: scroll;
 }
 
 .header {
