@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { SpotifyApiContext, UserAlbums } from "react-spotify-api";
 import { SpotifyAuth, Scopes } from "react-spotify-auth";
 import { MDBContainer } from "mdbreact";
+import SpotifyWebApi from "spotify-web-api-js";
 
 import Card from "./components/UI/Card";
 import MainHeader from "./components/nav/MainHeader";
@@ -14,8 +15,23 @@ import "./App.css";
 import "react-spotify-auth/dist/index.css";
 
 function App() {
+  const [totalAlbumsSaved, setTotalAlbumsSaved] = useState(0);
+
   const authContext = useContext(AuthContext);
   const searchContext = useContext(SearchContext);
+
+  let spotifyApi = new SpotifyWebApi();
+
+  const getTotalAlbumsSaved = () => {
+    if (authContext.token) {
+      spotifyApi.setAccessToken(authContext.token);
+      spotifyApi.getMySavedAlbums({}, (error, result) => {
+        console.log(result);
+        setTotalAlbumsSaved(result.total);
+      });
+    }
+    return <Card>Total Albums Saved: {totalAlbumsSaved}</Card>;
+  };
 
   return (
     <React.Fragment>
@@ -25,17 +41,7 @@ function App() {
             <MainHeader />
             <main>
               <Card className="search-label">{searchContext.searchedTerm}</Card>
-              <Card>
-                <UserAlbums>
-                  {({ data: albums, loading, error, loadMoreData }) => {
-                    if (albums && !loading) {
-                      return <Card>{albums.total}</Card>;
-                    } else {
-                      return <h1>No albums</h1>;
-                    }
-                  }}
-                </UserAlbums>
-              </Card>
+              {getTotalAlbumsSaved()}
               <ArtistsList />
             </main>
             <p>You are authorized with token: {authContext.token}</p>
