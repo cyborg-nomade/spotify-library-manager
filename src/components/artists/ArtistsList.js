@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { UserArtists } from "react-spotify-api";
-import InfiniteLoader from "react-virtualized/dist/commonjs/InfiniteLoader";
 
 import Card from "../UI/Card";
 import ArtistsListItem from "./ArtistsListItem";
@@ -16,6 +15,8 @@ const ArtistsList = (props) => {
   };
 
   const showDetailsHandler = (artist) => {
+    console.log(artist);
+
     setDisplay({
       title: "Artists Name",
       message: (
@@ -28,7 +29,7 @@ const ArtistsList = (props) => {
           <li>
             <a href={artist.uri}>Profile</a>
           </li>
-          <li>{artist.followers} Followers</li>
+          <li>{artist.followers.total} Followers</li>
           <li>Genres:</li>
           <ol>
             {artist.genres.map((genre) => (
@@ -41,7 +42,51 @@ const ArtistsList = (props) => {
     });
   };
 
-  const artistRowRenderer = (artistsObject) => {};
+  const totalArtists = (total) => {
+    return <Card>Total Artists: {total}</Card>;
+  };
+
+  const artistsArrayRenderer = (artistsArray) => {
+    return (
+      <Card>
+        {artistsArray.map((artist) => {
+          return (
+            <ArtistsListItem
+              key={artist.uri}
+              image={artist.images[0].url}
+              name={artist.name}
+              uri={artist.uri}
+              followers={artist.followers.total}
+              genres={artist.genres}
+              popularity={artist.popularity}
+              onShowDetails={() => showDetailsHandler(artist)}
+            />
+          );
+        })}
+      </Card>
+    );
+  };
+
+  let artistsListRenderer = ({ data: artists, loading, loadMoreData }) => {
+    if (artists && !loading) {
+      console.log(artists.artists.next);
+      console.log(artists.artists.items);
+      loadMoreData();
+      console.log(artists.artists.next);
+
+      let artistsArray = artists.artists.items;
+      artistsArray.sort((a, b) => a.name.localeCompare(b.name));
+
+      return (
+        <React.Fragment>
+          {totalArtists(artists.artists.total)}
+          {artistsArrayRenderer(artistsArray)}
+        </React.Fragment>
+      );
+    } else {
+      return <h1>No artists here</h1>;
+    }
+  };
 
   return (
     <React.Fragment>
@@ -53,38 +98,7 @@ const ArtistsList = (props) => {
         />
       )}
       <Card className={classes.artists}>
-        <UserArtists>
-          {({ data: artists, loading, loadMoreData }) => {
-            if (artists && !loading) {
-              let artistsArray = artists.artists.items;
-              artistsArray.sort((a, b) => a.name.localeCompare(b.name));
-
-              return (
-                <React.Fragment>
-                  <Card>Total Artists: {artists.artists.total}</Card>
-                  <Card>
-                    {artistsArray.map((artist) => {
-                      return (
-                        <ArtistsListItem
-                          key={artist.uri}
-                          image={artist.images[0].url}
-                          name={artist.name}
-                          uri={artist.uri}
-                          followers={artist.followers.total}
-                          genres={artist.genres}
-                          popularity={artist.popularity}
-                          onShowDetails={() => showDetailsHandler(artist)}
-                        />
-                      );
-                    })}
-                  </Card>
-                </React.Fragment>
-              );
-            } else {
-              return <h1>No artists here</h1>;
-            }
-          }}
-        </UserArtists>
+        <UserArtists>{artistsListRenderer}</UserArtists>
       </Card>
     </React.Fragment>
   );

@@ -27,13 +27,10 @@ function App() {
               <Card className="search-label">{searchContext.searchedTerm}</Card>
               <Card>
                 <UserAlbums>
-                  {(albums, loading, error) => {
-                    if (albums.data && !albums.loading) {
-                      console.log(albums.data);
-
-                      return <Card>{albums.data.total}</Card>;
+                  {({ data: albums, loading, error, loadMoreData }) => {
+                    if (albums && !loading) {
+                      return <Card>{albums.total}</Card>;
                     } else {
-                      console.log("No albums");
                       return <h1>No albums</h1>;
                     }
                   }}
