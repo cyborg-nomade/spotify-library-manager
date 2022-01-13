@@ -1,76 +1,69 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import AuthContext from "../store/auth-context";
+
+const spotifyApi = new SpotifyWebApi();
+
+const getAllPages = async (request) => {
+  const paginatedResponse = await request;
+  console.log(paginatedResponse.artists.next);
+
+  let currentResponse = paginatedResponse;
+
+  console.log(currentResponse.artists.next);
+
+  while (currentResponse.artists.next) {
+    currentResponse = await spotifyApi.getGeneric(currentResponse.artists.next);
+    console.log(currentResponse.artists.items);
+    paginatedResponse.artists.items = [
+      ...paginatedResponse.artists.items,
+      ...currentResponse.artists.items,
+    ];
+    console.log(paginatedResponse.artists.items);
+  }
+
+  console.log(paginatedResponse);
+
+  return paginatedResponse;
+};
 
 const useGetAllFollowedArtists = () => {
   const authContext = useContext(AuthContext);
 
   const [totalFollowedArtists, setTotalFollowedArtists] = useState(0);
   const [allFollowedArtists, setAllFollowedArtists] = useState([]);
-  const [after, setAfter] = useState();
-  const [next, setNext] = useState("");
+  const [error, setError] = useState(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      spotifyApi.setAccessToken(authContext.token);
+      const response = await getAllPages(
+        spotifyApi.getFollowedArtists({ limit: 50 })
+      );
+      console.log(response);
+      setTotalFollowedArtists(response.artists.total);
+      setAllFollowedArtists(
+        response.artists.items.sort((a, b) => a.name.localeCompare(b.name))
+      );
+      setError(null);
+    } catch (error) {
+      setError(error);
+      console.log(error);
+    }
+  }, [authContext.token]);
 
   useEffect(() => {
-    const spotifyApi = new SpotifyWebApi();
+    fetchData();
+  }, [fetchData]);
 
-    if (authContext.token) {
-      console.log(authContext.token);
-      spotifyApi.setAccessToken(authContext.token);
-      try {
-        spotifyApi.getFollowedArtists({ limit: 50 }, (error, result) => {
-          if (error) {
-            console.log(error);
-          }
-          console.log(result);
-          setTotalFollowedArtists(result.artists.total);
-          setAllFollowedArtists(result.artists.items);
-          //   setAfter(result.artists.cursors.after);
-          //   setNext(result.artists.next);
-        });
-      } catch (error) {
-        console.log(error);
-        // return {
-        //   allFollowedArtists,
-        //   totalFollowedArtists,
-        // };
-      }
-    }
-
-    // if (next) {
-    //   try {
-    //     spotifyApi.getFollowedArtists(
-    //       { limit: 50, after: after },
-    //       (error, result) => {
-    //         if (error) {
-    //           return error;
-    //         }
-    //         setAfter(result.artists.cursors.after);
-    //         setNext(result.artists.next);
-    //         setAllFollowedArtists((artistsArray) => [
-    //           ...artistsArray,
-    //           ...result.artists.items,
-    //         ]);
-    //       }
-    //     );
-    //   } catch (error) {
-    //     console.log(error);
-    //     return {
-    //       allFollowedArtists,
-    //       totalFollowedArtists,
-    //     };
-    //   }
-    // }
-  }, [authContext.token, next]);
-
-  const sortedArray = allFollowedArtists.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  // const sortedArray = allFollowedArtists
   //   const uniqArray = [...new Set(sortedArray)];
   //   setAllFollowedArtists(uniqArray);
 
   return {
     allFollowedArtists,
     totalFollowedArtists,
+    error,
   };
 };
 

@@ -58,10 +58,10 @@ const ArtistsList = (props) => {
         <Card className={classes.artists}>
           <Card>Total Followed Artists: {totalFollowedArtists}</Card>
           <Card>
-            {allFollowedArtists.map((artist) => {
+            {allFollowedArtists.map((artist, index) => {
               return (
                 <ArtistsListItem
-                  key={artist.uri}
+                  key={index}
                   image={artist.images[0]?.url}
                   name={artist.name}
                   uri={artist.uri}

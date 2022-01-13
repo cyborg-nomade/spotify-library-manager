@@ -24,7 +24,7 @@ function App() {
     if (authContext.token) {
       spotifyApi.setAccessToken(authContext.token);
       await spotifyApi.getMySavedAlbums({}, (error, result) => {
-        console.log(result);
+        // console.log(result);
         setTotalAlbumsSaved(result.total);
       });
     }
