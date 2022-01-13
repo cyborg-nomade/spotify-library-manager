@@ -4,9 +4,9 @@
 - text field showing the text typed in the search bar, as it's typed (OK)
 - clicking on the artist card displays a modal with the artist's data (OK)
 - spotify auth (OK -> gotta fix logout)
-- show total albums saved (OK -> convert to using spotify-web-api-js instead of react-spotify-api)
-- show total artists followed (OK -> convert to using spotify-web-api-js instead of react-spotify-api)
-- show all artist's followed
+- show total albums saved (OK)
+- show total artists followed (OK)
+- show all artist's followed (OK)
 
 # future versions (roadmap)
 
